@@ -1,6 +1,6 @@
-package com.rhmanagement.repository;
+package com.rhmanagement.repositories;
 
-import com.rhmanagement.model.Employee;
+import com.rhmanagement.domains.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

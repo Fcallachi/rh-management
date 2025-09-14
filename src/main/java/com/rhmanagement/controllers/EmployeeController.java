@@ -1,7 +1,8 @@
-package com.rhmanagement.controller;
+package com.rhmanagement.controllers;
 
-import com.rhmanagement.model.Employee;
-import com.rhmanagement.service.EmployeeService;
+import com.rhmanagement.dtos.EmployeeRequestDTO;
+import com.rhmanagement.dtos.EmployeeResponseDTO;
+import com.rhmanagement.gateways.EmployeeGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,31 +22,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeController {
 
-    private final EmployeeService employeeService;
+    private final EmployeeGateway employeeGateway;
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAllEmployees() {
-        final var employees = employeeService.findAll();
+    public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees() {
+        final var employees = employeeGateway.findAll();
         return ResponseEntity.ok(employees);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable final Long id) {
-        final var employee = employeeService.findById(id);
+    public ResponseEntity<EmployeeResponseDTO> getEmployeeById(@PathVariable final Long id) {
+        final var employee = employeeGateway.findById(id);
         return employee.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody final Employee employee) {
-        final var savedEmployee = employeeService.save(employee);
+    public ResponseEntity<EmployeeResponseDTO> createEmployee(@RequestBody final EmployeeRequestDTO employeeRequestDTO) {
+        final var savedEmployee = employeeGateway.save(employeeRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedEmployee);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable final Long id, @RequestBody final Employee employee) {
+    public ResponseEntity<EmployeeResponseDTO> updateEmployee(@PathVariable final Long id, @RequestBody final EmployeeRequestDTO employeeRequestDTO) {
         try {
-            final var updatedEmployee = employeeService.update(id, employee);
+            final var updatedEmployee = employeeGateway.update(id, employeeRequestDTO);
             return ResponseEntity.ok(updatedEmployee);
         } catch (final RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -54,7 +55,7 @@ public class EmployeeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable final Long id) {
-        employeeService.deleteById(id);
+        employeeGateway.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
