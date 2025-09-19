@@ -17,18 +17,19 @@ public class EmployeeGateway {
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
 
+//  todo retorna uma lista de funcionarios
     public List<EmployeeResponseDTO> findAll() {
         return employeeRepository.findAll().stream()
                 .map(employeeMapper::convertToResponseDTO)
                 .toList();
     }
 
-    public Optional<EmployeeResponseDTO> findById(final Long id) {
+    public Optional<EmployeeResponseDTO> findById(final Long id) {//todo paulo
         return employeeRepository.findById(id)
                 .map(employeeMapper::convertToResponseDTO);
     }
 
-    public EmployeeResponseDTO save(final EmployeeRequestDTO employeeRequestDTO) {
+    public EmployeeResponseDTO save(final EmployeeRequestDTO employeeRequestDTO) {// todo paulo
         final var employee = employeeMapper.convertToEntity(employeeRequestDTO);
         final var savedEmployee = employeeRepository.save(employee);
         return employeeMapper.convertToResponseDTO(savedEmployee);

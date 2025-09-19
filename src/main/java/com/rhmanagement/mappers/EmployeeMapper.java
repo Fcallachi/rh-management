@@ -7,24 +7,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmployeeMapper {
-
+//todo limao
     public Employee convertToEntity(final EmployeeRequestDTO dto) {
-        final var employee = new Employee();
-        employee.setName(dto.getName());
-        employee.setCargo(dto.getCargo());
-        employee.setSalario(dto.getSalario());
-        employee.setStatusPagamento(dto.getStatusPagamento());
-        return employee;
+        return Employee.builder()
+                .name(dto.getName())
+                .cargo(dto.getCargo())
+                .salario(dto.getSalario())
+                .statusPagamento(dto.getStatusPagamento())
+                .build();
     }
 
+    //todo limao
     public EmployeeResponseDTO convertToResponseDTO(final Employee employee) {
-        final var dto = new EmployeeResponseDTO();
-        dto.setId(employee.getId());
-        dto.setName(employee.getName());
-        dto.setCargo(employee.getCargo());
-        dto.setSalario(employee.getSalario());
-        dto.setStatusPagamento(employee.getStatusPagamento());
-        return dto;
+        return EmployeeResponseDTO.builder()
+                .id(employee.getId())
+                .name(employee.getName())
+                .cargo(employee.getCargo())
+                .salario(employee.getSalario())
+                .statusPagamento(employee.getStatusPagamento())
+                .build();
     }
 
 }
