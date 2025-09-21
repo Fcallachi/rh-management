@@ -10,4 +10,3 @@ public class RhManagementApplication {
         SpringApplication.run(RhManagementApplication.class, args);
     }
 }
-

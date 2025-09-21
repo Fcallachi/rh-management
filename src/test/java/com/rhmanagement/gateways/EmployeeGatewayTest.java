@@ -1,6 +1,7 @@
 package com.rhmanagement.gateways;
 
 import com.rhmanagement.domains.Employee;
+import com.rhmanagement.dtos.EmployeeRequestDTO;
 import com.rhmanagement.dtos.EmployeeResponseDTO;
 import com.rhmanagement.mappers.EmployeeMapper;
 import com.rhmanagement.repositories.EmployeeRepository;
@@ -12,10 +13,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class EmployeeGatewayTest {
@@ -102,4 +107,67 @@ public class EmployeeGatewayTest {
         assertEquals(expectedResponseDTOs.get(2), result.get(2));
     }
 
+    @Test
+    void shouldSaveEmployee_WhenSave() {
+
+        final var requestDTO = createEmployeeRequestDTO();
+        final var employee = createEmployee(null, "João Silva", "Desenvolvedor", 5000.0, true);
+        final var savedEmployee = createEmployee(1L, "João Silva", "Desenvolvedor", 5000.0, true);
+        final var expectedResponseDTO = createEmployeeResponseDTO(1L, "João Silva", "Desenvolvedor", 5000.0, true);
+
+        when(employeeMapper.convertToEntity(requestDTO)).thenReturn(employee);
+        when(employeeRepository.save(employee)).thenReturn(savedEmployee);
+        when(employeeMapper.convertToResponseDTO(savedEmployee)).thenReturn(expectedResponseDTO);
+
+        final var result = employeeGateway.save(requestDTO);
+
+        assertNotNull(result);
+        assertEquals(expectedResponseDTO, result);
+        verify(employeeRepository, times(1)).save(employee);
+    }
+
+    private EmployeeRequestDTO createEmployeeRequestDTO() {
+        return EmployeeRequestDTO.builder()
+                .name("João Silva")
+                .cargo("Desenvolvedor")
+                .salario(5000.0)
+                .statusPagamento(true)
+                .build();
+    }
+
+
+    @Test
+    void shouldFindEmployee_WhenFindById() {
+        final Long employeeId = 1L;
+
+        final var employee = createEmployee(employeeId, "João Silva", "Desenvolvedor", 5000.0, true);
+        final var expectedResponseDTO = createEmployeeResponseDTO(employeeId, "João Silva", "Desenvolvedor", 5000.0, true);
+
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+        when(employeeMapper.convertToResponseDTO(employee)).thenReturn(expectedResponseDTO);
+
+        final var result = employeeGateway.findById(employeeId);
+
+        assertTrue(result.isPresent());
+
+        assertEquals(expectedResponseDTO, result.get());
+
+        verify(employeeRepository, times(1)).findById(employeeId);
+
+    }
+
+    @Test
+    void shouldReturnEmptyOptional_WhenEmployeeNotFound() {
+        final Long nonExistentId = 99L;
+
+        when(employeeRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+
+        final var result = employeeGateway.findById(nonExistentId);
+
+        assertTrue(result.isEmpty());
+
+        verify(employeeRepository, times(1)).findById(nonExistentId);
+
+
+    }
 }
