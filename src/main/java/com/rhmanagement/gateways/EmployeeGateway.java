@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class EmployeeGateway {
-
+//TODO TIRAR TODOS OS COMMENTARIOS
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
 
