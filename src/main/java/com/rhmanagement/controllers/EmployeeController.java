@@ -22,11 +22,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeController {
 
-    private final EmployeeGateway employeeGateway;//todo está instanciando a classe do gateway comn seus metodos
+    private final EmployeeGateway employeeGateway;
 
     @GetMapping
     public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees() {
-        final var employees = employeeGateway.findAll();//todo chamando o metodo findall dentro da classe employeeGatewa, O valor que retorna está setando na variavel employees
+        final var employees = employeeGateway.findAll();
         return ResponseEntity.ok(employees);
     }
 
