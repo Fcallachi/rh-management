@@ -13,23 +13,21 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class EmployeeGateway {
-
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
 
-//  todo retorna uma lista de funcionarios
     public List<EmployeeResponseDTO> findAll() {
         return employeeRepository.findAll().stream()
                 .map(employeeMapper::convertToResponseDTO)
                 .toList();
     }
 
-    public Optional<EmployeeResponseDTO> findById(final Long id) {//todo paulo
+    public Optional<EmployeeResponseDTO> findById(final Long id) {
         return employeeRepository.findById(id)
                 .map(employeeMapper::convertToResponseDTO);
     }
 
-    public EmployeeResponseDTO save(final EmployeeRequestDTO employeeRequestDTO) {// todo paulo
+    public EmployeeResponseDTO save(final EmployeeRequestDTO employeeRequestDTO) {
         final var employee = employeeMapper.convertToEntity(employeeRequestDTO);
         final var savedEmployee = employeeRepository.save(employee);
         return employeeMapper.convertToResponseDTO(savedEmployee);

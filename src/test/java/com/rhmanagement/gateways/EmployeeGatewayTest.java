@@ -16,11 +16,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 public class EmployeeGatewayTest {
@@ -169,5 +171,64 @@ public class EmployeeGatewayTest {
         verify(employeeRepository, times(1)).findById(nonExistentId);
 
 
+    }
+    @Test
+    void updateShouldUpdateEmployee_WhenEmployeeExists(){
+        final Long employeeId = 1L;
+        final var requestDTO = createEmployeeRequestDTO();
+
+        final var existingEmployee = createEmployee(employeeId, "João Silva","Desenvolvedor",5.000, true);
+
+        final var updateEmployeeEntity = createEmployee(
+                employeeId,
+                requestDTO.getName(),
+                requestDTO.getCargo(),
+                requestDTO.getSalario(),
+                requestDTO.getStatusPagamento()
+        );
+
+        final var expectedEmployeeResponseDTO = createEmployeeResponseDTO(
+                employeeId,
+                requestDTO.getName(),
+                requestDTO.getCargo(),
+                requestDTO.getSalario(),
+                requestDTO.getStatusPagamento()
+        );
+
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(existingEmployee));
+        when(employeeRepository.save(updateEmployeeEntity)).thenReturn(updateEmployeeEntity);
+        when(employeeMapper.convertToResponseDTO(updateEmployeeEntity)).thenReturn(expectedEmployeeResponseDTO);
+
+        final var result = employeeGateway.update(employeeId, requestDTO);
+
+        assertNotNull(result);
+        assertEquals(expectedEmployeeResponseDTO, result);
+
+        verify(employeeRepository, times(1)).findById(employeeId);
+        verify(employeeRepository, times(1)).save(updateEmployeeEntity);
+
+    }
+
+    @Test
+    void updateShouldThrowException_WhenEmployeeDoesNotExist() {
+        final Long nonExistentId = 99L;
+        final var requestDTO = createEmployeeRequestDTO();
+
+        when(employeeRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> employeeGateway.update(nonExistentId, requestDTO));
+
+        verify(employeeRepository, times(1)).findById(nonExistentId);
+        verify(employeeRepository, times(0)).save(any());
+    }
+
+
+    @Test
+    void should_DeleteEmployee_WhenDeleteById(){
+        final Long employeeId = 1L;
+
+        employeeGateway.deleteById(employeeId);
+
+        verify(employeeRepository, times(1)).deleteById(employeeId);
     }
 }

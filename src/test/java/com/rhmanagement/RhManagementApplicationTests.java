@@ -8,6 +8,7 @@ class RhManagementApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 }
 

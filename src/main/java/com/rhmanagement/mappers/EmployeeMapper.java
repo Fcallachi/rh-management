@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmployeeMapper {
-//todo limao
+
     public Employee convertToEntity(final EmployeeRequestDTO dto) {
         return Employee.builder()
                 .name(dto.getName())
@@ -17,7 +17,7 @@ public class EmployeeMapper {
                 .build();
     }
 
-    //todo limao
+
     public EmployeeResponseDTO convertToResponseDTO(final Employee employee) {
         return EmployeeResponseDTO.builder()
                 .id(employee.getId())
