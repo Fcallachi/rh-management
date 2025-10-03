@@ -225,7 +225,7 @@ public class EmployeeGatewayTest {
 
     @Test
     void should_DeleteEmployee_WhenDeleteById(){
-        final Long employeeId = 1l;
+        final Long employeeId = 1L;
 
         employeeGateway.deleteById(employeeId);
 
